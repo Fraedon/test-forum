@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col col-md-4">
+            <div class="card">
+                {% if not current_user.is_authenticated %}
+                    <div class="card-body text-center">
+                        You are not logged in.
+                    </div>
+                {% else %}
+                    <div class="card-header d-flex">
+                        Welcome, <a href="/users/{{ current_user.id }}"
+                                    class="ml-1 text-muted">{{ current_user.display_name }}</a>
+                        <div class="ml-auto">
+                            <a href="/logout" class="text-danger">Log out</a>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% if board %}
+                            <li class="list-group-item text-center">
+                                <h2 class="mb-1">
+                                    <a href="/boards/{{ board.id }}" class="text-body board-title">{{ board.title }}</a>
+                                </h2>
+                                <i>{{ board.description }}</i>
+                            </li>
+                            {% if board.threads %}
+                                {% for thread in board.threads %}
+                                    <li class="list-group-item py-2 d-flex align-items-center {% if loop.last and not loop.first %}border-bottom-0{% endif %}">
+                                        <a href="/boards/{{ board.id }}/threads/{{ thread.id }}"
+                                           class="text-secondary">
+                                            <i class="fas fa-align-left mr-2"></i>{{ thread.title }}
+                                        </a>
+                                        <small class="ml-auto">
+                                            {% if (thread.posts | length) == 0 %}
+                                                No posts
+                                            {% else %}
+                                                {{ thread.posts | length }} post{% if (thread.posts | length) > 1 %}s
+                                            {% endif %}
+                                            {% endif %}
+                                        </small>
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="list-group-item text-center text-muted">
+                                    No threads to display
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="list-group-item">Select a board to view more</li>
+                        {% endif %}
+                    </ul>
+                    {% if board %}
+                        <div class="card-footer py-2 d-flex">
+                            <small>
+                                Role: {{ board.get_current_contributor().role }}
+                            </small>
+                            <small class="ml-auto">
+                                <a href="/boards/{{ board.id }}/threads/create" class="text-muted">Create thread…</a>
+                                <a href="/boards/{{ board.id }}/settings" class="text-muted ml-2">Settings…</a>
+                            </small>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="col col-md-8">
+            {% block view %}
+                <ul class="list-group">
+                    {% for board in boards %}
+                        <li class="list-group-item">
+                        <span class="d-flex align-items-center">
+                            <a href="/boards/{{ board.id }}" class="text-info">{{ board.title }}</a>
+                            <small class="ml-auto">
+                                <span>{{ board.members | length }} member{% if (board.members | length) > 1 %}
+                                    s{% endif %}</span>
+                            </small>
+                        </span>
+                            <small class="font-italic">{{ board.description }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "main.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script>
+        const mde = new SimpleMDE({
+            element: document.getElementById("content"),
+            forceSync: true,
+            showIcons: ["code", "table"],
+        });
+    </script>
+{% endblock %}
+
+{% block view %}
+    <div class="card">
+        <div class="card-body">
+            <h4 class="mb-3">
+                Create a new post on: <a href="/boards/{{ board.id }}/threads/{{ thread.id }}"
+                                         class="text-info">{{ thread.title }}</a>
+            </h4>
+            <hr>
+            {{ render_form(form, action="/boards/" + board.id + "/threads/" + thread.id + "/posts/create") }}
+        </div>
+    </div>
+{% endblock %}

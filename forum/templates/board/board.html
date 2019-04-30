@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+
+{% block view %}
+    <div class="card">
+        <div class="card-body md-body">
+            {{ board.get_content_markdown() | safe }}
+        </div>
+        <div class="card-footer d-flex py-1">
+            <small class="text-secondary">
+                {{ board.members | length }} member{{ "s" if (board.members | length) > 1 }}
+                <span class="mx-1">⬩</span> {{ board.threads | length }} thread{{ "s" if (board.threads | length) > 1 }}
+            </small>
+            <small class="ml-auto text-secondary">
+                Created: <abbr title="{{ board.created_at }}">{{ board.created_at | timesince }}</abbr>
+            </small>
+        </div>
+    </div>
+{% endblock %}

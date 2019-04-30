@@ -1,0 +1,91 @@
+{% extends "main.html" %}
+
+{% block view %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <div class="media mb-2">
+                <div class="d-flex flex-column align-items-center">
+                    <img src="https://picsum.photos/64/64?random=1" alt=""
+                         class="post-avatar rounded border border-secondary">
+                    <strong class="mt-1">
+                        <a href="/users/{{ thread.owner_id }}" class="text-body">
+                            {{ thread.get_owner().display_name }}
+                        </a>
+                    </strong>
+                    <small class="text-muted post-role">{{ thread.get_owner_as_member().role }}</small>
+                </div>
+
+                <div class="media-body ml-3">
+                    <header class="d-flex align-items-center">
+                        <h4 class="m-0">
+                            <a href="/boards/{{ board.id }}/threads/{{ thread.id }}"
+                               class="text-secondary">{{ thread.title }}</a>
+                        </h4>
+                        <small class="ml-auto text-muted">
+                            Created: <abbr title="{{ thread.created_at }}">{{ thread.created_at | timesince }}</abbr>
+                        </small>
+                    </header>
+                    <hr class="mt-2">
+                    <div class="md-body">
+                        {{ thread.get_content_markdown() | safe }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-flex">
+                <small class="text-secondary">#1</small>
+                <small class="ml-auto">
+                    {% if not thread.readonly %}
+                        <a href="/boards/{{ board.id }}/threads/{{ thread.id }}/posts/create" class="text-info">Create
+                            post…</a>
+                    {% endif %}
+                    <a href="/boards/{{ board.id }}/threads/{{ thread.id }}/edit" class="text-secondary ml-2">
+                        Edit thread…
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    {% for post in thread.posts %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="media mb-2">
+                    <div class="d-flex flex-column align-items-center">
+                        <img src="http://bossymoksie.files.wordpress.com/2012/06/blank_avatar_220.png" alt=""
+                             class="post-avatar rounded border border-secondary">
+                        <strong class="mt-1">
+                            <a href="/users/{{ post.owner_id }}" class="text-body">
+                                {{ post.get_owner().display_name }}
+                            </a>
+                        </strong>
+                        <small class="text-muted post-role">{{ post.get_owner_as_member().role }}</small>
+                    </div>
+
+                    <div class="media-body ml-3">
+                        <header class="d-flex align-items-center">
+                            <small class="ml-auto text-muted">
+                                Created: <abbr
+                                    title="{{ post.created_at }}">{{ post.created_at | timesince }}</abbr>
+                            </small>
+                        </header>
+                        <hr class="mt-2">
+                        <div class="md-body">
+                            {{ post.get_content_markdown() | safe }}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="d-flex">
+                    <small class="text-secondary">#{{ loop.index + 1 }}</small>
+                    <small class="ml-auto">
+                        <a href="/boards/{{ board.id }}/threads/{{ thread.id }}/posts/{{ post.id }}/edit"
+                           class="text-secondary ml-2">
+                            Edit post…
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
